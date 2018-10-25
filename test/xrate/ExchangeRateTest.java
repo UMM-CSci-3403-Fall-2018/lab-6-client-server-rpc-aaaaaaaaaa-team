@@ -11,7 +11,7 @@ import org.xml.sax.SAXException;
 import static org.junit.Assert.*;
 
 public class ExchangeRateTest {
-    private static final String NICS_DUMMY_DATA_URL = "http://www.morris.umn.edu/~mcphee/ExchangeRateData/";
+    private static final String NICS_DUMMY_DATA_URL = "http://facultypages.morris.umn.edu/~mcphee/ExchangeRateData/";
     private static final double DELTA = 0.0001;
 
     @Test

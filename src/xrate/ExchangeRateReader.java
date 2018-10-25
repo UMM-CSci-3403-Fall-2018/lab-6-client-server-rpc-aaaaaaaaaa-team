@@ -1,13 +1,26 @@
 package xrate;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.sun.org.apache.xerces.internal.xs.StringList;
+
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.lang.reflect.Array;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Provide access to basic currency exchange rate services.
- * 
- * @author PUT YOUR TEAM NAME HERE
+ *
+ * @author aaaaaaaaaa-team
  */
 public class ExchangeRateReader {
+
+    private String base;
 
     /**
      * Construct an exchange rate reader using the given base URL. All requests
@@ -21,13 +34,11 @@ public class ExchangeRateReader {
      *            the base URL for requests
      */
     public ExchangeRateReader(String baseURL) {
-        // TODO Your code here
-        /*
-         * DON'T DO MUCH HERE!
-         * People often try to do a lot here, but the action is actually in
-         * the two methods below. All you need to do here is store the
-         * provided `baseURL` in a field so it will be accessible later.
-         */
+        base = baseURL;
+    }
+
+    public float getRate(JsonObject ratesInfo, String currency){
+        return ratesInfo.getAsJsonObject("rates").get(currency).getAsFloat();
     }
 
     /**
@@ -46,8 +57,17 @@ public class ExchangeRateReader {
      * @throws IOException
      */
     public float getExchangeRate(String currencyCode, int year, int month, int day) throws IOException {
-        // TODO Your code here
-        throw new UnsupportedOperationException();
+        String urlString = base;
+        if(urlString.contains("faculty")){
+            urlString = urlString + "/" + year + "-" + month + "-" + day;
+        }
+        URL url = new URL(urlString);
+        InputStream inputStream = url.openStream();
+        Reader reader = new InputStreamReader(inputStream);
+        JsonObject rawData = new JsonParser().parse(reader).getAsJsonObject();
+        Float rate = getRate(rawData,currencyCode);
+
+        return rate;
     }
 
     /**
@@ -70,7 +90,19 @@ public class ExchangeRateReader {
     public float getExchangeRate(
             String fromCurrency, String toCurrency,
             int year, int month, int day) throws IOException {
-        // TODO Your code here
-        throw new UnsupportedOperationException();
+        String urlString = base;
+        if(urlString.contains("faculty")){
+            urlString = urlString + year + "-" + month + "-" + day;
+        }
+        URL url = new URL(urlString);
+        InputStream inputStream = url.openStream();
+        Reader reader = new InputStreamReader(inputStream);
+        JsonObject rawData = new JsonParser().parse(reader).getAsJsonObject();
+        float rateFrom = getRate(rawData, fromCurrency);
+        float rateTo = getRate(rawData, toCurrency);
+
+        Float rate = rateFrom/rateTo;
+
+        return rate;
     }
 }
